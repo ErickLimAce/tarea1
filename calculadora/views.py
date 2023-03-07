@@ -131,16 +131,21 @@ def usuarios(request):
 
 """
 
-
-def usuarios(request):
-    con = sqlite3.connect("db.sqlite3")
-    cur = con.cursor()
-    res = cur.execute("SELECT * FROM usuarios")
-    resultado = res.fetchall()
-    con.close()
-    return render(request, 'usuarios.html', {'resultado': resultado})
-
 @csrf_exempt
+def usuarios(request):
+    if request.method == 'GET':
+        con = sqlite3.connect("db.sqlite3")
+        cur = con.cursor()
+        res = cur.execute("SELECT * FROM usuarios")
+        resultado = res.fetchall()
+        con.close()
+        return render(request, 'usuarios.html', {'resultado': resultado})
+    elif request.method =='POST':
+        return (usuarios_p(request))
+    elif request.method=='DELETE':
+        return (usuarios_d(request))
+@csrf_exempt
+
 def usuarios_p(request):
     body= request.body.decode('UTF-8')
     eljson=loads(body)
