@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from json import loads,dumps
 from django.views.decorators.csrf import csrf_exempt
+
 from .models import Reto
 import sqlite3
 
@@ -106,10 +107,59 @@ def divison(request):
     resultado_json = resultado.toJSON()
     return HttpResponse(resultado_json,content_type ="text/json-comment-filtered")
 
-def usuarios (request):
+"""def usuarios (request):
     con = sqlite3.connect("db.sqlite3")
     cur = con.cursor()
     res= cur.execute("SELECT * FROM usuarios")
     resultado = res.fetchall()
-    print(resultado)
+    for registro in resultado:
+        [id,grupo, grado,numero]= registro
+        print(registro)
     return HttpResponse(resultado)
+
+
+def usuarios(request):
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    res = cur.execute("SELECT * FROM usuarios")
+    resultado = res.fetchall()
+    registros = []
+    for registro in resultado:
+        [id, grupo, grado, numero] = registro
+        registros.append({'id': id, 'grupo': grupo, 'grado': grado, 'numero': numero})
+    return render(request, 'usuarios.html', {'registros': registros})
+
+"""
+
+
+def usuarios(request):
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    res = cur.execute("SELECT * FROM usuarios")
+    resultado = res.fetchall()
+    con.close()
+    return render(request, 'usuarios.html', {'resultado': resultado})
+
+@csrf_exempt
+def usuarios_p(request):
+    body= request.body.decode('UTF-8')
+    eljson=loads(body)
+    grado=eljson['grado']
+    grupo=eljson['grupo']
+    num_lista=eljson['num_lista']
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    res = cur.execute("INSERT INTO usuarios(grado,grupo,num_lista) VALUES (?,?,?)",(grupo,grado,num_lista))
+    con.commit()
+    return HttpResponse('OK')
+@csrf_exempt
+def usuarios_d(request):
+    body= request.body.decode('UTF-8')
+    eljson=loads(body)
+    id_usuario=eljson['id_usuario']
+    con = sqlite3.connect("db.sqlite3")
+    cur = con.cursor()
+    res = cur.execute("DELETE FROM usuarios WHERE id_usuario = ?",(str(id_usuario)))
+    con.commit()
+    return HttpResponse('Borrado con exito')
+   

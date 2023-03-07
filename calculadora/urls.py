@@ -9,4 +9,6 @@ urlpatterns = {
     path('multiplicacion',views.multiplicacion,name='multiplicacion'),
     path('division',views.divison,name='division'),
     path('usuarios',views.usuarios,name='usuarios'),
-}
+    path('usuarios_p',views.usuarios_p,name='usuarios_p'),
+    path('usuarios_d',views.usuarios_d,name='usuarios_d'),
+}   
