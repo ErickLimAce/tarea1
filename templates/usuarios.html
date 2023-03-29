@@ -1,28 +1,13 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <title>Usuarios</title>
-</head>
-<body>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Grupo</th>
-                <th>Grado</th>
-                <th>Numero</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for registro in resultado %}
-                <tr>
-                    <td>{{ registro.0 }}</td>
-                    <td>{{ registro.1 }}</td>
-                    <td>{{ registro.2 }}</td>
-                    <td>{{ registro.3 }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
+    <head>
+
+    </head>
+    <body>
+    <h1>Lista de usuarios</h1>
+	<ul>
+	{% for j in lista_usuarios%}
+	<li> {{j.id}} : {{j.grupo}} : {{j.grado}} : {{j.num_lista}} </li>
+	{% endfor%}
+	</ul>
+    </body>
 </html>

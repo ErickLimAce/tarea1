@@ -2,5 +2,12 @@
     <head>
 
     </head>
-    <h1>Lista del juego</h1>
+    <body>
+    <h1>Lista de jugadores del juego</h1>
+	<ul>
+	{% for j in lista_jugadores%}
+	<li> {{j.nombre}} : {{j.minutos_jugados}} </li>
+	{% endfor%}
+	</ul>
+    </body>
 </html>
