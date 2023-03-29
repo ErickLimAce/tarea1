@@ -8,3 +8,5 @@ class Reto(models.Model):
 class Jugadores(models.Model):
     grupo = models.CharField(max_length=2)
     num_lista = models.IntegerField()
+
+    
