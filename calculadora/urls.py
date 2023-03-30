@@ -1,6 +1,7 @@
 from django.urls import include,path
 from rest_framework import routers
 from . import views
+from .views import Usuarios_list,Partidas_Jugadores_list
 
 router = routers.DefaultRouter()
 router.register(r'reto', views.RetoViewSet)
@@ -21,4 +22,6 @@ urlpatterns = [
     path('valida_usuario',views.valida_usuario,name='valida_usuario'),
     path('grafica',views.grafica,name='grafica'),
     path('barras',views.barras,name='barras'),
+    path('users/', Usuarios_list, name='Usuarios_list'),
+    path('users/<int:user_id>/partidas_Jugadores_list/', Partidas_Jugadores_list, name='Partidas_jugadores'),
 ]

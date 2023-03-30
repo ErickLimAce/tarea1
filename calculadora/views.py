@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from . serializers import RetoSerializer,JugadorSerializer
-from .models import Reto,Jugadores
+from . serializers import RetoSerializer,JugadorSerializer, Serializer_Usuarios, Serializer_Partidas_Jugadores
+from .models import Reto,Jugadores,Usuarios,Partidas_Jugador
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads,dumps
 import sqlite3 
 import requests 
 from random import randrange
+from django.http import JsonResponse
 
 # Create your views here.
 def nueva():
@@ -208,3 +209,15 @@ def barras(request):
         return render(request,'barras.html',elJSON)
     else:
         return HttpResponse("<h1> No hay registros a mostrar</h1>")
+    
+
+def Usuarios_list(request):
+    usuarios = Usuarios.objects.all()
+    serialized_users = [Serializer_Usuarios(Usuarios) for Usuarios in usuarios]
+    return JsonResponse(Serializer_Usuarios, safe=False)
+
+def Partidas_Jugadores_list(request, user_id):
+    partidas_Jugador = Partidas_Jugador.objects.filter(user_id=user_id)
+    Serializer_Partidas_Jugadores = [Serializer_Partidas_Jugadores(Partidas_Jugador) for Partidas_jugador in partidas_Jugador]
+    return JsonResponse(Serializer_Partidas_Jugadores, safe=False)
+    
