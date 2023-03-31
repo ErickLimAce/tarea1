@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Reto,Jugadores,Usuarios,Partidas_Jugador
+from .models import Reto,Jugadores
 
 class RetoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -11,17 +11,17 @@ class JugadorSerializer(serializers.HyperlinkedModelSerializer):
         model = Jugadores
         fields = ('id','grupo','num_lista')
 
-def Serializer_Usuarios(Usuarios):
-    return {
-        'password': Jugadores.password,
-        }
-     
+#aqui empieza la tarea
+from rest_framework import serializers
+from .models import Usuario, PartidaJugador
+
+class UsuarioSerializer(serializers.ModelSerializer):
     
-def Serializer_Partidas_Jugadores(Partidas_Jugador):
-    return{
-    'id':Partidas_Jugador.id,
-    'fecha':Partidas_Jugador.fecha,
-    'id_usuario':Partidas_Jugador.id_usuario,
-    'minutos_jugados':Partidas_Jugador.minutos_jugados,
-    'puntaje':Partidas_Jugador.puntaje,
-    }
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+
+class PartidaJugadorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PartidaJugador
+        fields = '__all__'

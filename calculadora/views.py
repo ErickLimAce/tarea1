@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from . serializers import RetoSerializer,JugadorSerializer, Serializer_Usuarios, Serializer_Partidas_Jugadores
-from .models import Reto,Jugadores,Usuarios,Partidas_Jugador
+from . serializers import RetoSerializer,JugadorSerializer
+from .models import Reto,Jugadores
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads,dumps
@@ -210,14 +210,72 @@ def barras(request):
     else:
         return HttpResponse("<h1> No hay registros a mostrar</h1>")
     
+#Aquí empieza la tarea
 
-def Usuarios_list(request):
-    usuarios = Usuarios.objects.all()
-    serialized_users = [Serializer_Usuarios(Usuarios) for Usuarios in usuarios]
-    return JsonResponse(Serializer_Usuarios, safe=False)
+from rest_framework import generics, status
+from rest_framework.response import Response
+from .models import Usuario, PartidaJugador
+from .serializers import UsuarioSerializer, PartidaJugadorSerializer
 
-def Partidas_Jugadores_list(request, user_id):
-    partidas_Jugador = Partidas_Jugador.objects.filter(user_id=user_id)
-    Serializer_Partidas_Jugadores = [Serializer_Partidas_Jugadores(Partidas_Jugador) for Partidas_jugador in partidas_Jugador]
-    return JsonResponse(Serializer_Partidas_Jugadores, safe=False)
+
+class UsuarioList(generics.ListCreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
     
+class UsuarioDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    #prueba put
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        record_id = request.data.get('id')
+
+        if instance.id == record_id:
+            self.perform_destroy(instance)
+            return Response({'status': 'success'})
+        else:
+            return Response({'status': 'error', 'message': 'Record ID does not match.'})
+
+class PartidaJugadorList(generics.ListCreateAPIView):
+    queryset = PartidaJugador.objects.all()
+    serializer_class = PartidaJugadorSerializer
+    
+
+class PartidaJugadorDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PartidaJugador.objects.all()
+    serializer_class = PartidaJugadorSerializer
+
+#
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        record_id = request.data.get('id')
+
+        if instance.id == record_id:
+            self.perform_destroy(instance)
+            return Response({'status': 'success'})
+        else:
+            return Response({'status': 'error', 'message': 'Record ID does not match.'})
+
+
+
+#mas pruebas 

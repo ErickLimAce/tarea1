@@ -1,11 +1,16 @@
 from django.urls import include,path
 from rest_framework import routers
 from . import views
-from .views import Usuarios_list,Partidas_Jugadores_list
+#Tarea
+from .views import UsuarioList, UsuarioDetail, PartidaJugadorList, PartidaJugadorDetail
+#prueba
+
+
 
 router = routers.DefaultRouter()
 router.register(r'reto', views.RetoViewSet)
 router.register(r'jugador', views.JugadoresViewSet)
+
 
 urlpatterns = [
     path('api',include(router.urls)),
@@ -22,6 +27,18 @@ urlpatterns = [
     path('valida_usuario',views.valida_usuario,name='valida_usuario'),
     path('grafica',views.grafica,name='grafica'),
     path('barras',views.barras,name='barras'),
-    path('users/', Usuarios_list, name='Usuarios_list'),
-    path('users/<int:user_id>/partidas_Jugadores_list/', Partidas_Jugadores_list, name='Partidas_jugadores'),
+    
+    
+    
+    path('usuarios/', UsuarioList.as_view(), name='usuario-list'),
+    path('usuarios/<int:pk>/', UsuarioDetail.as_view(), name='usuario-detail'),
+    path('partidasjugador/', PartidaJugadorList.as_view(), name='partidajugador-list'),
+    path('partidasjugador/<int:pk>/', PartidaJugadorDetail.as_view(), name='partidajugador-detail'),
 ]
+
+#Para correrlo debemos: En la sección "Headers",  incluir la cabecera "Content-Type" con el valor "application/json" y posteriormente escribir el formato json en seccion raw
+#Para partidas por jugador: {"id": 1,"fecha": "2022-03-30","id_usuario": 1,"minutos_jugados": 30,"puntaje": 100}
+#Para DELETE http://localhost:8000/usuarios/22 no pude generarlo desde el json
+#Para PUT "id": 22, "password": "nuevacontraseña", de igual forma no pude hacer que buscara el id sin especificarlo en la url.
+#Sin embargo tanto para DELETe como PUT generé una verificación que permitiera borrar/actualizar tanto usuarios como partidas por medio del ID y dependiendo el caso te desplegaría un mensaje correspondiente
+
