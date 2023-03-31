@@ -226,7 +226,7 @@ class UsuarioDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     #prueba put
-    def put(self, request):
+    def put(self, request,*args, **kwargs):
         instance = self.get_object()#obtiene el objeto que se va a eliminar con get object
         serializer = self.get_serializer(instance, data=request.data)#instancia, convertir los datos de  HTTP a base de datos.
 
@@ -236,7 +236,7 @@ class UsuarioDetail(generics.RetrieveUpdateDestroyAPIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)#de regreso
     
-    def delete(self, request):
+    def delete(self, request,*args, **kwargs):
         instance = self.get_object()#obtiene el objeto que se va a eliminar con get object
         record_id = request.data.get('id')#get id
 
@@ -257,7 +257,7 @@ class PartidaJugadorDetail(generics.RetrieveUpdateDestroyAPIView):
 
 #
 
-    def put(self, request):
+    def put(self, request,*args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
 
@@ -267,7 +267,7 @@ class PartidaJugadorDetail(generics.RetrieveUpdateDestroyAPIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, request):
+    def delete(self, request,*args, **kwargs):
         instance = self.get_object()
         record_id = request.data.get('id')
 
