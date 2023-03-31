@@ -36,9 +36,10 @@ urlpatterns = [
     path('partidasjugador/<int:pk>/', PartidaJugadorDetail.as_view(), name='partidajugador-detail'),
 ]
 
-#Para correrlo debemos: En la sección "Headers",  incluir la cabecera "Content-Type" con el valor "application/json" y posteriormente escribir el formato json en seccion raw
-#Para partidas por jugador: {"id": 1,"fecha": "2022-03-30","id_usuario": 1,"minutos_jugados": 30,"puntaje": 100}
+#Para correrlo debemos: En la sección "Headers",  incluir "Content-Type" y "application/json" y posteriormente escribir el formato json en seccion raw
+#Como ejemplo Para partidas por jugador: {"fecha": "2022-03-30","id_usuario": 22,"minutos_jugados": 30,"puntaje": 100} Si no existe un usario con el id no te permitirá crear una partida
 #Para DELETE http://localhost:8000/usuarios/22 no pude generarlo desde el json
-#Para PUT "id": 22, "password": "nuevacontraseña", de igual forma no pude hacer que buscara el id sin especificarlo en la url.
+#Para PUT http://localhost:8000/usuarios/21 y json {"id": 21, "password": 12345}, de igual forma no pude hacer que buscara el id sin especificarlo en la url.
+#En el caso de Partidas http://localhost:8000/partidasjugador/5 5 siendo el id de la partida { "id": 5,"fecha": "2022-03-29","id_usuario": 21,"minutos_jugados": 120,"puntaje": 80}
 #Sin embargo tanto para DELETe como PUT generé una verificación que permitiera borrar/actualizar tanto usuarios como partidas por medio del ID y dependiendo el caso te desplegaría un mensaje correspondiente
 

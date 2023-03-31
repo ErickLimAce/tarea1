@@ -226,25 +226,25 @@ class UsuarioDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     #prueba put
-    def put(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+    def put(self, request):
+        instance = self.get_object()#obtiene el objeto que se va a eliminar con get object
+        serializer = self.get_serializer(instance, data=request.data)#instancia, convertir los datos de  HTTP a base de datos.
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        if serializer.is_valid():#verificación
+            serializer.save()#Guarda cambios
+            return Response(serializer.data)#Muestra cambios
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)#de regreso
     
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
-        record_id = request.data.get('id')
+    def delete(self, request):
+        instance = self.get_object()#obtiene el objeto que se va a eliminar con get object
+        record_id = request.data.get('id')#get id
 
-        if instance.id == record_id:
-            self.perform_destroy(instance)
-            return Response({'status': 'success'})
+        if instance.id == record_id:#verificación
+            self.perform_destroy(instance)#si si lo borra
+            return Response({'Se eliminó correctamente'})
         else:
-            return Response({'status': 'error', 'message': 'Record ID does not match.'})
+            return Response({'ID no valida.'})#de regreso
 
 class PartidaJugadorList(generics.ListCreateAPIView):
     queryset = PartidaJugador.objects.all()
@@ -257,7 +257,7 @@ class PartidaJugadorDetail(generics.RetrieveUpdateDestroyAPIView):
 
 #
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
 
@@ -266,15 +266,16 @@ class PartidaJugadorDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def delete(self, request, *args, **kwargs):
+        
+    def delete(self, request):
         instance = self.get_object()
         record_id = request.data.get('id')
 
         if instance.id == record_id:
             self.perform_destroy(instance)
-            return Response({'status': 'success'})
+            return Response({'Se eliminó correctamente'})
         else:
-            return Response({'status': 'error', 'message': 'Record ID does not match.'})
+            return Response({'ID no valida.'})
 
 
 
