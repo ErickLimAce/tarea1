@@ -1,8 +1,9 @@
 from django.urls import include,path
 from rest_framework import routers
 from . import views
+
 #Tarea
-from .views import UsuarioList, UsuarioDetail, PartidaJugadorList, PartidaJugadorDetail
+from .views import Partidas, Usuarios
 #prueba
 
 
@@ -29,11 +30,11 @@ urlpatterns = [
     path('barras',views.barras,name='barras'),
     
     
+    path('partidas',  Partidas.as_view(),name='Partidas'),
+    path('partidas/<int:id>',  Partidas.as_view(),name='Partida'),
+    path('usuarios',  Usuarios.as_view(),name='Partidas'),
+    path('usuarios/<int:id>',  Usuarios.as_view(),name='Partida'),
     
-    path('usuarios/', UsuarioList.as_view(), name='usuario-list'),
-    path('usuarios/<int:pk>/', UsuarioDetail.as_view(), name='usuario-detail'),
-    path('partidasjugador/', PartidaJugadorList.as_view(), name='partidajugador-list'),
-    path('partidasjugador/<int:pk>/', PartidaJugadorDetail.as_view(), name='partidajugador-detail'),
 ]
 
 #Para correrlo debemos: En la sección "Headers",  incluir "Content-Type" y "application/json" y posteriormente escribir el formato json en seccion raw

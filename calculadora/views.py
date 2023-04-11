@@ -281,7 +281,7 @@ class Partidas(View):
 
     def get(self, request, id=0):
         if(id>0):
-            partidas= list(Partidas.objects.filter(id=id).values())
+            partidas= list(Partida.objects.filter(id=id).values())
             if len(partidas)>0:
                 partida=partidas[0]
                 datos = {'message': "Partida encontrada", 'partidas':partida}
@@ -289,7 +289,7 @@ class Partidas(View):
                 datos = {'message':"No se encontró la partida, intentelo nuevamente"}
             return JsonResponse(datos)
         else:
-            partidas = list(Partidas.objects.values()) #serializamos
+            partidas = list(Partida.objects.values()) #serializamos
             if len(partidas)>0:
                 datos = {'message': "Succes", 'partidas':partidas}
             else:
@@ -298,17 +298,17 @@ class Partidas(View):
     
     def post(self,request):
         jd = json.loads(request.body)
-        Partidas.objects.create(fecha=jd['fecha'],id_usuario=usuarios.objects.get(pk = jd['id_usuario']),minutos_jugados=jd['minutos_jugados'],puntaje=jd['puntaje'])
+        Partida.objects.create(fecha=jd['fecha'],id_usuario=Usuario.objects.get(pk = jd['id_usuario']),minutos_jugados=jd['minutos_jugados'],puntaje=jd['puntaje'])
         datos = {'message': "Partida añadida"}
         return JsonResponse(datos)
     
     def put(self, request,id):
         jd = json.loads(request.body)
-        partidas= list(Partidas.objects.filter(id=id).values())#Serializamos
+        partidas= list(Partida.objects.filter(id=id).values())#Serializamos
         if len(partidas)>0:
-            partidas=Partidas.objects.get(id=id)
+            partidas=Partida.objects.get(id=id)
             partidas.fecha= jd['fecha']
-            partidas.id_usuario= usuarios.objects.get(pk = jd['id_usuario'])
+            partidas.id_usuario= Usuario.objects.get(pk = jd['id_usuario'])
             partidas.minutos_jugados= jd['minutos_jugados']
             partidas.puntaje= jd['puntaje']
             partidas.save()
@@ -318,9 +318,9 @@ class Partidas(View):
         return JsonResponse(datos)
     
     def delete(self, request,id):
-        partidas = list(Partidas.objects.filter(id=id).values())
+        partidas = list(Partida.objects.filter(id=id).values())
         if len(partidas)>0:
-            Partidas.objects.filter(id=id).delete()
+            Partida.objects.filter(id=id).delete()
             datos = {'message':"Se eliminó la partida"}
         else:
             datos = {'message':"No se encontró la partida"}
