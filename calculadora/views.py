@@ -246,18 +246,18 @@ class Usuarios(View):
         jd = json.loads(request.body)
         users= list(Usuario.objects.filter(id=id).values())#Serializer en punto
         if len(users)>0:
-            users=Usuario.objects.get(id=id)
-            users.password= jd['password']
-            users.save()
+            users=Usuario.objects.get(id=id) #recibe id
+            users.password= jd['password']#nueva cont
+            users.save()#guardo
             datos = {'message':"Se modifico correctamente"}
         else:
             datos = {'message':"Usuario erroneo, intentelo nuevamente"}
         return JsonResponse(datos)
     #delete
     def delete(self, request,id):
-        users = list(Usuario.objects.filter(id=id).values())
+        users = list(Usuario.objects.filter(id=id).values()) #busca id
         if len(users)>0:
-            Usuario.objects.filter(id=id).delete()
+            Usuario.objects.filter(id=id).delete() #usa func delete
             datos = {'message':"Se eliminó correctamente"}
         else:
             datos = {'message':"No se encontró el usuario"}
