@@ -217,7 +217,7 @@ def barras(request):
     
 #Aquí empieza la tarea
 
-from .models import Usuarios, Partidas
+from .models import usuarios, Partidas
 
 class Usuarios(View):
     @method_decorator(csrf_exempt)

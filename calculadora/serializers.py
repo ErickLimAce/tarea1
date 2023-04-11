@@ -12,6 +12,5 @@ class JugadorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id','grupo','num_lista')
 
 #aqui empieza la tarea
-from rest_framework import serializers
-from .models import Usuarios, Partidas
+
 

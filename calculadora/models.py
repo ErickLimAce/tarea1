@@ -12,13 +12,13 @@ class Jugadores(models.Model):
 #Aquí empieza la tarea
 
 
-class Usuarios(models.Model):
+class usuarios(models.Model):
     
     password = models.CharField(max_length=255)
 
 class Partidas(models.Model):
 
     fecha = models.DateField()
-    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(usuarios, on_delete=models.CASCADE)
     minutos_jugados = models.PositiveIntegerField()
     puntaje = models.PositiveIntegerField()
