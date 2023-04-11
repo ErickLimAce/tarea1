@@ -225,27 +225,17 @@ from .models import Usuario, Partida
 
 class Usuarios(View):
     @method_decorator(csrf_exempt)
-    #inicial 
-    def base(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     #get
-    def get(self, request, id=0):
-        if(id>0):
-            users=list(Usuario.objects.filter(id=id).values())
-            if len(users)>0:
-                user=users[0]
-                datos = {'message': "Usuario encontrado", 'users':user}
-            else:
-                datos = {'message':"No se ha encontrado el usuario"}
-            return JsonResponse(datos)
-        else:
+    def get(self, request):
             users = list(Usuario.objects.values()) #serializamos
             if len(users)>0:
                 datos = {'message': "Succes", 'users':users}
             else:
                 datos = {'message':"No se enconteraron usuarios"}
             return JsonResponse(datos)
-    #post
+    #post      
     def post(self,request):
         jd = json.loads(request.body)
         Usuario.objects.create(password=jd['password'])
@@ -259,7 +249,7 @@ class Usuarios(View):
             users=Usuario.objects.get(id=id)
             users.password= jd['password']
             users.save()
-            datos = {'message':"Se modificó correctamente"}
+            datos = {'message':"Se modifico correctamente"}
         else:
             datos = {'message':"Usuario erroneo, intentelo nuevamente"}
         return JsonResponse(datos)
@@ -276,7 +266,7 @@ class Usuarios(View):
 #para partidas es el mismo proceso
 class Partidas(View):
     @method_decorator(csrf_exempt)
-    def base(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, id=0):
@@ -286,14 +276,14 @@ class Partidas(View):
                 partida=partidas[0]
                 datos = {'message': "Partida encontrada", 'partidas':partida}
             else:
-                datos = {'message':"No se encontró la partida, intentelo nuevamente"}
+                datos = {'message':"No se encontro la partida, intentelo nuevamente"}
             return JsonResponse(datos)
         else:
             partidas = list(Partida.objects.values()) #serializamos
             if len(partidas)>0:
                 datos = {'message': "Succes", 'partidas':partidas}
             else:
-                datos = {'message':"No se encontró la partida, intentelo nuevamente"}
+                datos = {'message':"No se encontro la partida, intentelo nuevamente"}
             return JsonResponse(datos)
     
     def post(self,request):
@@ -314,16 +304,16 @@ class Partidas(View):
             partidas.save()
             datos = {'message':"Se modificó la partida"}
         else:
-            datos = {'message':"No se encontró la partida"}
+            datos = {'message':"No se encontro la partida"}
         return JsonResponse(datos)
     
     def delete(self, request,id):
         partidas = list(Partida.objects.filter(id=id).values())
         if len(partidas)>0:
             Partida.objects.filter(id=id).delete()
-            datos = {'message':"Se eliminó la partida"}
+            datos = {'message':"Se elimino la partida"}
         else:
-            datos = {'message':"No se encontró la partida"}
+            datos = {'message':"No se encontro la partida"}
         return JsonResponse(datos)
 
 
