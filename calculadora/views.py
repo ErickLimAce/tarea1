@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework import generics, status
+from rest_framework.response import Response
 from . serializers import RetoSerializer,JugadorSerializer
 from .models import Reto,Jugadores
 from django.http import HttpResponse
@@ -9,7 +11,10 @@ import sqlite3
 import requests 
 from random import randrange
 from django.http import JsonResponse
-
+from django.utils.decorators import method_decorator
+import json
+from django.views import View
+from django.http import JsonResponse
 # Create your views here.
 def nueva():
     return 0
@@ -212,71 +217,102 @@ def barras(request):
     
 #Aquí empieza la tarea
 
-from rest_framework import generics, status
-from rest_framework.response import Response
-from .models import Usuario, PartidaJugador
-from .serializers import UsuarioSerializer, PartidaJugadorSerializer
+from .models import Usuarios, Partidas
 
+class Usuarios(View):
+    @method_decorator(csrf_exempt)
+    #inicial 
+    def base(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    #get
+    def get(self, request):
+            users = list(usuarios.objects.values()) #serializer en punto
+            if len(users)>0:
+                datos = {'message': "Exito", 'users':users}
+            else:
+                datos = {'message':"Usuarios erroneos, intentelo nuevamente"}
+            return JsonResponse(datos)
+    #post
+    def post(self,request):
+        jd = json.loads(request.body)
+        usuarios.objects.create(password=jd['password'])
+        datos = {'message': "Usuario creado correctamente"}
+        return JsonResponse(datos)
+    #put
+    def put(self, request,id):
+        jd = json.loads(request.body)
+        users= list(usuarios.objects.filter(id=id).values())#Serializer en punto
+        if len(users)>0:
+            users=usuarios.objects.get(id=id)
+            users.password= jd['password']
+            users.save()
+            datos = {'message':"Se modificó correctamente"}
+        else:
+            datos = {'message':"Usuario erroneo, intentelo nuevamente"}
+        return JsonResponse(datos)
+    #delete
+    def delete(self, request,id):
+        users = list(usuarios.objects.filter(id=id).values())
+        if len(users)>0:
+            usuarios.objects.filter(id=id).delete()
+            datos = {'message':"Se eliminó correctamente"}
+        else:
+            datos = {'message':"No se encontró el usuario"}
+        return JsonResponse(datos)
 
-class UsuarioList(generics.ListCreateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+#para partidas es el mismo proceso
+class Partidas(View):
+    @method_decorator(csrf_exempt)
+    def base(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, id=0):
+        if(id>0):
+            partidas= list(Partidas.objects.filter(id=id).values())
+            if len(partidas)>0:
+                partida=partidas[0]
+                datos = {'message': "Partida encontrada", 'partidas':partida}
+            else:
+                datos = {'message':"No se encontró la partida, intentelo nuevamente"}
+            return JsonResponse(datos)
+        else:
+            partidas = list(Partidas.objects.values()) #serializamos
+            if len(partidas)>0:
+                datos = {'message': "Succes", 'partidas':partidas}
+            else:
+                datos = {'message':"No se encontró la partida, intentelo nuevamente"}
+            return JsonResponse(datos)
     
-class UsuarioDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
-    #prueba put
-    def put(self, request,*args, **kwargs):
-        instance = self.get_object()#obtiene el objeto que se va a eliminar con get object
-        serializer = self.get_serializer(instance, data=request.data)#instancia, convertir los datos de  HTTP a base de datos.
-
-        if serializer.is_valid():#verificación
-            serializer.save()#Guarda cambios
-            return Response(serializer.data)#Muestra cambios
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)#de regreso
+    def post(self,request):
+        jd = json.loads(request.body)
+        Partidas.objects.create(fecha=jd['fecha'],id_usuario=usuarios.objects.get(pk = jd['id_usuario']),minutos_jugados=jd['minutos_jugados'],puntaje=jd['puntaje'])
+        datos = {'message': "Partida añadida"}
+        return JsonResponse(datos)
     
-    def delete(self, request,*args, **kwargs):
-        instance = self.get_object()#obtiene el objeto que se va a eliminar con get object
-        record_id = request.data.get('id')#get id
-
-        if instance.id == record_id:#verificación
-            self.perform_destroy(instance)#si si lo borra
-            return Response({'Se eliminó correctamente'})
+    def put(self, request,id):
+        jd = json.loads(request.body)
+        partidas= list(Partidas.objects.filter(id=id).values())#Serializamos
+        if len(partidas)>0:
+            partidas=Partidas.objects.get(id=id)
+            partidas.fecha= jd['fecha']
+            partidas.id_usuario= usuarios.objects.get(pk = jd['id_usuario'])
+            partidas.minutos_jugados= jd['minutos_jugados']
+            partidas.puntaje= jd['puntaje']
+            partidas.save()
+            datos = {'message':"Se modificó la partida"}
         else:
-            return Response({'ID no valida.'})#de regreso
-
-class PartidaJugadorList(generics.ListCreateAPIView):
-    queryset = PartidaJugador.objects.all()
-    serializer_class = PartidaJugadorSerializer
+            datos = {'message':"No se encontró la partida"}
+        return JsonResponse(datos)
     
-
-class PartidaJugadorDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = PartidaJugador.objects.all()
-    serializer_class = PartidaJugadorSerializer
-
-#
-
-    def put(self, request,*args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+    def delete(self, request,id):
+        partidas = list(Partidas.objects.filter(id=id).values())
+        if len(partidas)>0:
+            Partidas.objects.filter(id=id).delete()
+            datos = {'message':"Se eliminó la partida"}
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    def delete(self, request,*args, **kwargs):
-        instance = self.get_object()
-        record_id = request.data.get('id')
-
-        if instance.id == record_id:
-            self.perform_destroy(instance)
-            return Response({'Se eliminó correctamente'})
-        else:
-            return Response({'ID no valida.'})
+            datos = {'message':"No se encontró la partida"}
+        return JsonResponse(datos)
 
 
 
-#mas pruebas 
+

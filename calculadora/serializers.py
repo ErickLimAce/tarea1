@@ -13,15 +13,5 @@ class JugadorSerializer(serializers.HyperlinkedModelSerializer):
 
 #aqui empieza la tarea
 from rest_framework import serializers
-from .models import Usuario, PartidaJugador
+from .models import Usuarios, Partidas
 
-class UsuarioSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Usuario
-        fields = '__all__'
-
-class PartidaJugadorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PartidaJugador
-        fields = '__all__'
