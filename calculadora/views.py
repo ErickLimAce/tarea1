@@ -229,16 +229,16 @@ class Usuarios(View):
         return super().dispatch(request, *args, **kwargs)
     #get
     def get(self, request):
-            users = list(Usuario.objects.values()) #serializamos
-            if len(users)>0:
-                datos = {'message': "Succes", 'users':users}
+            users = list(Usuario.objects.values()) #Serializer en punto. Querryset  
+            if len(users)>0:#valida que haya usuarios
+                datos = {'users':users}
             else:
                 datos = {'message':"No se enconteraron usuarios"}
             return JsonResponse(datos)
     #post      
     def post(self,request):
         jd = json.loads(request.body)
-        Usuario.objects.create(password=jd['password'])
+        Usuario.objects.create(password=jd['password'])#parametro contraseña
         datos = {'message': "Usuario creado correctamente"}
         return JsonResponse(datos)
     #put
@@ -269,19 +269,10 @@ class Partidas(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, id=0):
-        if(id>0):
-            partidas= list(Partida.objects.filter(id=id).values())
+    def get(self, request):
+            partidas = list(Partida.objects.values()) #Serializer en punto
             if len(partidas)>0:
-                partida=partidas[0]
-                datos = {'message': "Partida encontrada", 'partidas':partida}
-            else:
-                datos = {'message':"No se encontro la partida, intentelo nuevamente"}
-            return JsonResponse(datos)
-        else:
-            partidas = list(Partida.objects.values()) #serializamos
-            if len(partidas)>0:
-                datos = {'message': "Succes", 'partidas':partidas}
+                datos = {'partidas':partidas}
             else:
                 datos = {'message':"No se encontro la partida, intentelo nuevamente"}
             return JsonResponse(datos)
@@ -294,7 +285,7 @@ class Partidas(View):
     
     def put(self, request,id):
         jd = json.loads(request.body)
-        partidas= list(Partida.objects.filter(id=id).values())#Serializamos
+        partidas= list(Partida.objects.filter(id=id).values())#Serializer en punto
         if len(partidas)>0:
             partidas=Partida.objects.get(id=id)
             partidas.fecha= jd['fecha']
