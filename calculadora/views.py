@@ -216,8 +216,12 @@ def barras(request):
         return HttpResponse("<h1> No hay registros a mostrar</h1>")
     
 #Aquí empieza la tarea
-
-from .models import usuarios, Partidas
+from django.views.decorators.csrf import csrf_exempt
+from django.views import View
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+import json
+from .models import Usuario, Partida
 
 class Usuarios(View):
     @method_decorator(csrf_exempt)
@@ -225,25 +229,34 @@ class Usuarios(View):
     def base(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     #get
-    def get(self, request):
-            users = list(usuarios.objects.values()) #serializer en punto
+    def get(self, request, id=0):
+        if(id>0):
+            users=list(Usuario.objects.filter(id=id).values())
             if len(users)>0:
-                datos = {'message': "Exito", 'users':users}
+                user=users[0]
+                datos = {'message': "Usuario encontrado", 'users':user}
             else:
-                datos = {'message':"Usuarios erroneos, intentelo nuevamente"}
+                datos = {'message':"No se ha encontrado el usuario"}
+            return JsonResponse(datos)
+        else:
+            users = list(Usuario.objects.values()) #serializamos
+            if len(users)>0:
+                datos = {'message': "Succes", 'users':users}
+            else:
+                datos = {'message':"No se enconteraron usuarios"}
             return JsonResponse(datos)
     #post
     def post(self,request):
         jd = json.loads(request.body)
-        usuarios.objects.create(password=jd['password'])
+        Usuario.objects.create(password=jd['password'])
         datos = {'message': "Usuario creado correctamente"}
         return JsonResponse(datos)
     #put
     def put(self, request,id):
         jd = json.loads(request.body)
-        users= list(usuarios.objects.filter(id=id).values())#Serializer en punto
+        users= list(Usuario.objects.filter(id=id).values())#Serializer en punto
         if len(users)>0:
-            users=usuarios.objects.get(id=id)
+            users=Usuario.objects.get(id=id)
             users.password= jd['password']
             users.save()
             datos = {'message':"Se modificó correctamente"}
@@ -252,9 +265,9 @@ class Usuarios(View):
         return JsonResponse(datos)
     #delete
     def delete(self, request,id):
-        users = list(usuarios.objects.filter(id=id).values())
+        users = list(Usuario.objects.filter(id=id).values())
         if len(users)>0:
-            usuarios.objects.filter(id=id).delete()
+            Usuario.objects.filter(id=id).delete()
             datos = {'message':"Se eliminó correctamente"}
         else:
             datos = {'message':"No se encontró el usuario"}
