@@ -328,5 +328,5 @@ class Tabla(View):
             data.append([str(idUser),int(puntaje),int(minutos),str(fecha),int(idp)])
         data_formato = dumps(data) #formatear los datos en string para JSON 
         elJSON = {'losDatos':data}
-        return render(request,'grafica.html',elJSON)
+        return render(request,'tabla.html',elJSON)
     
