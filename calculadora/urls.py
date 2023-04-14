@@ -4,7 +4,8 @@ from . import views
 
 #Tarea
 from .views import Partidas, Usuarios
-#prueba
+#Tarea tabla
+from .views import Tabla
 
 
 
@@ -35,6 +36,8 @@ urlpatterns = [
     path('usuarios',  Usuarios.as_view(),name='Partidas'),
     path('usuarios/<int:id>',  Usuarios.as_view(),name='Partida'),
     
+
+   path('tabla',  Tabla.as_view(),name='Tabla'),
 ]
 
 #Para correrlo usando RESTMAN debemos: En la sección "Headers",  incluir "Content-Type" y "application/json" y posteriormente escribir el formato json en seccion raw

@@ -258,9 +258,9 @@ class Usuarios(View):
         users = list(Usuario.objects.filter(id=id).values()) #busca id
         if len(users)>0:
             Usuario.objects.filter(id=id).delete() #usa func delete
-            datos = {'message':"Se eliminó correctamente"}
+            datos = {'message':"Se elimino correctamente"}
         else:
-            datos = {'message':"No se encontró el usuario"}
+            datos = {'message':"No se encontro el usuario"}
         return JsonResponse(datos)
 
 #para partidas es el mismo proceso
@@ -293,7 +293,7 @@ class Partidas(View):
             partidas.minutos_jugados= jd['minutos_jugados']
             partidas.puntaje= jd['puntaje']
             partidas.save()
-            datos = {'message':"Se modificó la partida"}
+            datos = {'message':"Se modifico correctamente"}
         else:
             datos = {'message':"No se encontro la partida"}
         return JsonResponse(datos)
@@ -302,11 +302,31 @@ class Partidas(View):
         partidas = list(Partida.objects.filter(id=id).values())
         if len(partidas)>0:
             Partida.objects.filter(id=id).delete()
-            datos = {'message':"Se elimino la partida"}
+            datos = {'message':"Se elimino correctamente"}
         else:
             datos = {'message':"No se encontro la partida"}
         return JsonResponse(datos)
 
+#Tarea Gráficas
 
-
-
+class Tabla(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request):
+        
+        data = []
+        data.append(['Usuario','Puntaje','Minutos Jugados','Fecha','Partida'])
+        resultados = Partida.objects.all() #Select * From Partida_Jugadores;
+        for registro in resultados:
+            idUser = registro.id_usuario_id
+            idp = registro.id
+            minutos = registro.minutos_jugados 
+            fecha = registro.fecha 
+            puntaje = registro.puntaje
+            data.append([str(idUser),int(puntaje),int(minutos),str(fecha),int(idp)])
+        data_formato = dumps(data) #formatear los datos en string para JSON 
+        elJSON = {'losDatos':data}
+        return render(request,'grafica.html',elJSON)
+    
